@@ -1,32 +1,39 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import Input from './components/Input';
+import ListOfPlaces from './components/ListOfPlaces';
 
 export default function App() {
-
- 
-
+  
   const [placename, setPlacename] = useState('');
-  const [enteredPlace, setEnteredPlace] = useState('');
+  const [enteredPlaces, setEnteredPlaces] = useState([]);
 
   const placeNameHandler = (input) => {
     setPlacename(input);
   }
 
   const addAwesomePlaceHandler = () => {
-    setEnteredPlace(placename);
+    if(placename.trim()===""){
+      return;
+    }  
+    if(enteredPlaces.length > 0){
+      setEnteredPlaces([...enteredPlaces, placename]);
+    } else {
+      setEnteredPlaces([placename]);
+    }   
   }
 
+  const deletePlace = (itemKey) => {
+    setEnteredPlaces(enteredPlaces.filter((placename, i) => {
+      return i !== itemKey;
+    }));
+}
+
+  
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput 
-        style={styles.input}
-        placeholder="An awesome place"
-        value={placename}
-        onChangeText={placeNameHandler}
-        />
-        <Button style={styles.button} title="ADD" onPress={addAwesomePlaceHandler}/>
-      </View>
+      <Input placename={placename} placeNameHandler={placeNameHandler} addAwesomePlaceHandler={addAwesomePlaceHandler} />
+      <ListOfPlaces enteredPlaces={enteredPlaces} deletePlace={deletePlace} />
     </View>
   );
 }
@@ -37,12 +44,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  inputContainer: {
-    width:"100%",
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  input: { width:"70%" },
-  button : { width: "30%" }
+  }
+  
 });
